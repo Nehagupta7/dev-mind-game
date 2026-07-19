@@ -1,6 +1,10 @@
 import { Navigate, useParams } from 'react-router-dom'
-import MemoryMatrix from './MemoryMatrix'
 import type { ReactElement } from 'react'
+import MemoryMatrix from './MemoryMatrix'
+import TicTacToeGame from './games/TicTacToeGame'
+import SnakeGame from './games/SnakeGame'
+import LudoGame from './games/LudoGame'
+import ChessGame from './games/ChessGame'
 
 type GameId =
   | 'typing'
@@ -8,24 +12,28 @@ type GameId =
   | 'tictactoe'
   | 'ludo'
   | 'mindmatrix'
+  | 'memory-matrix'
   | 'snake'
   | 'chess'
 
 type GameRouteConfig = {
   id: GameId
   name: string
-  ready: boolean
   element?: ReactElement
+  redirectTo?: string
 }
 
+const DEFAULT_ROUTE = '/play/mindmatrix'
+
 const GAME_ROUTES: GameRouteConfig[] = [
-  { id: 'typing', name: 'Typing Sprint', ready: false },
-  { id: 'sudoku', name: 'Sudoku', ready: false },
-  { id: 'tictactoe', name: 'Tic-Tac-Toe', ready: false },
-  { id: 'ludo', name: 'Ludo', ready: false },
-  { id: 'mindmatrix', name: 'Mind Matrix', ready: true, element: <MemoryMatrix /> },
-  { id: 'snake', name: 'Snake', ready: false },
-  { id: 'chess', name: 'Chess', ready: false },
+  { id: 'typing', name: 'Typing Sprint' },
+  { id: 'sudoku', name: 'Sudoku' },
+  { id: 'tictactoe', name: 'Tic-Tac-Toe', element: <TicTacToeGame /> },
+  { id: 'ludo', name: 'Ludo', element: <LudoGame /> },
+  { id: 'mindmatrix', name: 'Mind Matrix', element: <MemoryMatrix /> },
+  { id: 'memory-matrix', name: 'Mind Matrix', redirectTo: DEFAULT_ROUTE },
+  { id: 'snake', name: 'Snake', element: <SnakeGame /> },
+  { id: 'chess', name: 'Chess', element: <ChessGame /> },
 ]
 
 function ComingSoonGame({ name }: { name: string }) {
@@ -59,14 +67,18 @@ function ComingSoonGame({ name }: { name: string }) {
 
 export default function GameRouter() {
   const { gameId } = useParams()
-  const resolvedGameId = gameId ?? 'mindmatrix'
+  const resolvedGameId = (gameId ?? 'mindmatrix') as GameId
   const game = GAME_ROUTES.find((entry) => entry.id === resolvedGameId)
 
   if (!game) {
-    return <Navigate to="/" replace />
+    return <Navigate to={DEFAULT_ROUTE} replace />
   }
 
-  if (game.ready && game.element) {
+  if (game.redirectTo) {
+    return <Navigate to={game.redirectTo} replace />
+  }
+
+  if (game.element) {
     return game.element
   }
 

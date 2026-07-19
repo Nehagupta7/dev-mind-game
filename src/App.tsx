@@ -1,4 +1,4 @@
-import { useNavigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import HomePage from './components/HomePage'
 import GameRouter from './components/GameRouter'
 
@@ -7,11 +7,11 @@ function App() {
 
   return (
     <>
-     <Routes>
-      <Route path="/" element={<HomePage onPlay={(gameId) => navigate(`/play/${gameId}`)} />} />
-      <Route path="/play/:gameId" element={<GameRouter />} />
-      <Route path="/play/memory-matrix" element={<GameRouter />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<HomePage onPlay={(gameId) => navigate(`/play/${gameId}`)} />} />
+        <Route path="/play" element={<GameRouter />} />
+        <Route path="/play/:gameId" element={<GameRouter />} />
+      </Routes>
     </>
   )
 }

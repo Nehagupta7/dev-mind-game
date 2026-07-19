@@ -50,6 +50,7 @@ interface Game {
   levelColor: LevelColor;
   desc: string;
   icon: LucideIcon;
+  externalLink?: string;
 }
 
 interface ComingSoonGame {
@@ -90,14 +91,15 @@ interface Theme {
   threeC2: number;
 }
 
+
 const GAMES: Game[] = [
-  { id: "typing", name: "Typing Sprint", tag: "Speed & Reflexes", level: "All Levels", levelColor: "a2", desc: "Race the clock typing real code syntax without breaking flow.", icon: Keyboard },
-  { id: "sudoku", name: "Sudoku", tag: "Logic", level: "Medium", levelColor: "a1", desc: "Classic number logic to warm up pattern recognition before a deploy.", icon: Grid3x3 },
-  { id: "tictactoe", name: "Tic-Tac-Toe", tag: "Quick Reps", level: "Easy", levelColor: "a2", desc: "A 30-second mental reset between pull requests.", icon: Hash },
-  { id: "ludo", name: "Ludo", tag: "Strategy", level: "Easy", levelColor: "a2", desc: "Multiplayer dice strategy for the coffee-break crew.", icon: Dices },
-  { id: "mindmatrix", name: "Mind Matrix", tag: "Memory", level: "Hard", levelColor: "a3", desc: "Sequence and pattern recall drills built for engineers.", icon: Brain },
-  { id: "snake", name: "Snake", tag: "Reflexes", level: "Medium", levelColor: "a1", desc: "Old-school reflex training, one line of code short.", icon: Gamepad2 },
-  { id: "chess", name: "Chess", tag: "Deep Logic", level: "Hard", levelColor: "a3", desc: "Long-form strategic thinking for your architecture brain.", icon: Crown },
+  { id: "typing", externalLink:"https://nehagupta7.github.io/typing-game/", name: "Typing Sprint", tag: "Speed & Reflexes", level: "All Levels", levelColor: "a2", desc: "Race the clock typing real code syntax without breaking flow.", icon: Keyboard },
+  // { id: "sudoku", name: "Sudoku", tag: "Logic", level: "Medium", levelColor: "a1", desc: "Classic number logic to warm up pattern recognition before a deploy.", icon: Grid3x3 },
+  { id: "tictactoe",externalLink:"https://nehagupta7.github.io/Tic-tac-toe/", name: "Tic-Tac-Toe", tag: "Quick Reps", level: "Easy", levelColor: "a2", desc: "A 30-second mental reset between pull requests.", icon: Hash },
+  { id: "ludo", externalLink:"https://nehagupta7.github.io/snakes-ladders/",name: "Ludo", tag: "Strategy", level: "Easy", levelColor: "a2", desc: "Multiplayer dice strategy for the coffee-break crew.", icon: Dices },
+  { id: "mindmatrix", externalLink:"",name: "Mind Matrix", tag: "Memory", level: "Hard", levelColor: "a3", desc: "Sequence and pattern recall drills built for engineers.", icon: Brain },
+  // { id: "snake", name: "Snake", tag: "Reflexes", level: "Medium", levelColor: "a1", desc: "Old-school reflex training, one line of code short.", icon: Gamepad2 },
+  { id: "chess", externalLink:"https://nehagupta7.github.io/chess-game/",name: "Chess", tag: "Deep Logic", level: "Hard", levelColor: "a3", desc: "Long-form strategic thinking for your architecture brain.", icon: Crown },
 ];
 
 const COMING_SOON: ComingSoonGame[] = [
@@ -375,13 +377,13 @@ export default function HomePage({ onPlay }: DevMindGymHomeProps) {
     if (!scene) return;
 
     const { mesh1: oldMesh1, mesh2: oldMesh2 } = meshRef.current;
-    [oldMesh1, oldMesh2].forEach((m) => {
-      if (m) {
-        scene.remove(m);
-        m.geometry.dispose();
-        (m.material as THREE.Material).dispose();
-      }
-    });
+      [oldMesh1, oldMesh2].forEach((m) => {
+        if (m) {
+          scene.remove(m);
+          if (m.geometry) m.geometry.dispose();
+          (m.material as THREE.Material).dispose();
+        }
+      });
 
     let geo1: THREE.BufferGeometry;
     let geo2: THREE.BufferGeometry;
@@ -428,6 +430,7 @@ export default function HomePage({ onPlay }: DevMindGymHomeProps) {
   const removeFromSession = (id: string) => setSession((prev) => prev.filter((s) => s.id !== id));
 
   const handlePlay = (gameId: string) => {
+
     setPulseId(gameId);
     setTimeout(() => setPulseId(null), 400);
     if (onPlay) onPlay(gameId);
@@ -682,7 +685,24 @@ export default function HomePage({ onPlay }: DevMindGymHomeProps) {
                   <h3 className="dmg-display text-2xl mb-1">{game.name}</h3>
                   <p className="dmg-eyebrow mb-3" style={{ color: "var(--accent1)" }}>{game.tag}</p>
                   <p className="text-sm mb-6 flex-1" style={{ color: "var(--text-muted)" }}>{game.desc}</p>
-                  <button onClick={() => handlePlay(game.id)} className={`dmg-play-btn px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2 ${pulseId === game.id ? "pulse" : ""}`}>
+                  <button onClick={() => 
+                  
+                  
+                 {
+                  if(game.externalLink){
+                   return  window.location.href = game.externalLink;
+                  }{
+                    
+                    handlePlay(game.id)}
+                  }
+                
+                } 
+                              style={{
+                    position: "relative",
+                    zIndex: 9999,
+                    pointerEvents: "auto",
+                  }}
+                  className={`dmg-play-btn px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2 ${pulseId === game.id ? "pulse" : ""}`}>
                     <Play size={14} /> Play
                   </button>
                 </TiltCard>
