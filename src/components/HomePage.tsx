@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import {
   Keyboard,
-  Grid3x3,
   Hash,
   Dices,
   Brain,
-  Gamepad2,
   Crown,
   Dumbbell,
   Flame,
